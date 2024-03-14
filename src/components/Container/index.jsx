@@ -11,19 +11,26 @@ const Container = () => {
   // Zustank State
   const isEnable = useToggleStore((state) => state.isEnable);
 
-  const { data } = useQuery({
+  // Fetch the Data
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["data"],
-    queryFn: () => {
-      fetch(`https://652f91320b8d8ddac0b2b62b.mockapi.io/autocomplete`)
-        .then((response) => response.json())
-        .then((data) => console.log(data));
+    queryFn: async () => {
+      const response = await fetch(
+        `https://652f91320b8d8ddac0b2b62b.mockapi.io/autocomplete`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const data = await response.json();
+      return data;
     },
   });
+
   return (
     <div className=" w-1/2 flex flex-col rounded border border-solid bg-white">
       <Header />
       <Information />
-      {isEnable && <TextArea />}
+      {isEnable && <TextArea isLoading={isLoading} data={data} refetch={refetch} />}
     </div>
   );
 };
