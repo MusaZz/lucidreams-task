@@ -1,8 +1,9 @@
 // Store
-import { useSearchStore, useListStore } from "../../../store";
+import { useSearchStore, useListStore, useCountStore } from "../../../store";
 
 // React Hookss
 import { useRef } from "react";
+import ListItem from "./ListItem";
 
 const TextArea = ({ data }) => {
   // Search State
@@ -14,11 +15,18 @@ const TextArea = ({ data }) => {
   const setList = useListStore((state) => state.setList);
   const deleteLastItem = useListStore((state) => state.deleteLastItem);
 
-  // Use Ref
-  const input = useRef();
+  // Count State
+  const count = useCountStore((state) => state.count);
+  const counter = useCountStore((state) => state.counter);
+  const setCount = useCountStore((state) => state.setCount);
+  const setCounter = useCountStore((state) => state.setCounter);
 
-  const inputFocused = () => {
-    input.current.focus();
+  // Use Ref
+  const textInput = useRef();
+  const countInput = useRef();
+
+  const textInputFocused = () => {
+    textInput.current.focus();
   };
 
   const handleKeyDown = (event) => {
@@ -32,17 +40,19 @@ const TextArea = ({ data }) => {
         <div className="  items-center flex-wrap border  rounded leading-8 p-2 flex">
           <ul className=" flex items-center flex-wrap">
             {list &&
-              list.map((item) => (
-                <li
-                  className=" bg-gray-900 w-fit bg-opacity-10 px-2 py-1 rounded border leading-8 font-medium border-gray-300 text-gray-900 "
-                  key={item}
-                >
-                  {item}
-                </li>
+              list.map((item, index) => (
+                <ListItem
+                  key={index}
+                  item={item}
+                  countInput={countInput}
+                  counter={counter}
+                  setCounter={setCounter}
+                  count={count}
+                />
               ))}
             <div className=" relative">
               <input
-                ref={input}
+                ref={textInput}
                 value={search}
                 onKeyDown={handleKeyDown}
                 onChange={(event) => {
@@ -51,20 +61,20 @@ const TextArea = ({ data }) => {
                 className=" w-full focus:outline-none leading-10 "
               ></input>
               {search.length > 1 && (
-                <ul className=" absolute left-0 flex flex-col py-3 px-2 w-fit bg-white shadow-lg">
+                <ul className="  absolute left-0 flex flex-col py-3 px-2 w-fit bg-white shadow-lg">
                   {data.slice(0, 5).map((d) => (
                     <li
                       onClick={() => {
                         setList(d.name);
                         setSearch("");
-                        inputFocused();
+                        textInputFocused();
                       }}
                       className=" hover:bg-[#B7E0FF] duration-200 cursor-pointer rounded p-2"
                       key={d.id}
                     >
-                      <div className=" flex items-center gap-64">
-                        <span className=" font-sans">{d.name}</span>
-                        <span className=" text-gray-600 texs-sm font-mono">
+                      <div className=" flex items-center">
+                        <span className=" w-64 font-sans">{d.name}</span>
+                        <span className=" w-28 text-gray-600 texs-sm font-mono">
                           {d.category}
                         </span>
                       </div>

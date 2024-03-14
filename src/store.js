@@ -23,3 +23,21 @@ export const useListStore = create((set) => ({
     set((state) => ({ list: state.list.slice(0, -1) }));
   },
 }));
+
+export const useCountStore = create((set) => ({
+  count: 1,
+  counter: "x",
+  setCount: (value) => {
+    set(() => ({ count: value }));
+  },
+  setCounter: (value) => {
+    set(() => ({ counter: value }));
+  },
+}));
+
+export const useMathStore = create((set) => ({
+  math: "",
+  setMath: (value) => {
+    set(() => ({ math: value }));
+  },
+}));
